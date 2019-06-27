@@ -4,15 +4,22 @@
     "runtime-version": "18.08",
     "sdk": "org.freedesktop.Sdk",
     "command": "sml",
+    "finish-args": [
+        "--filesystem=host",
+        "--share=network",
+        "--socket=x11",
+        "--share=ipc"
+    ],
     "modules": [
         {
             "name": "sml",
             "buildsystem": "simple",
             "build-commands": [
-                "mkdir config",
-                "mv `ls --ignore='config' --ignore='*.tgz'` config",
-                "config/install.sh",
-                "mv /run/build/sml/* /app/",
+                "shopt -s dotglob",
+                "mkdir /app/config",
+                "mv `ls --ignore='*.tgz'` /app/config",
+                "mv * /app/",
+                "(cd /app; config/install.sh)",
                 "rm /app/*.tgz"
             ],
             "sources": [
