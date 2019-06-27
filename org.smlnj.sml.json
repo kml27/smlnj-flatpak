@@ -1,0 +1,31 @@
+{
+    "app-id": "org.smlnj.sml",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "18.08",
+    "sdk": "org.freedesktop.Sdk",
+    "command": "sml",
+    "modules": [
+        {
+            "name": "sml",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mkdir config",
+                "mv `ls --ignore='config' --ignore='*.tgz'` config",
+                "config/install.sh",
+                "mv /run/build/sml/* /app/",
+                "rm /app/*.tgz"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "path": "archives/config.tgz"
+                },
+                {
+                    "type":"dir",
+                    "path":"archives"
+                }
+
+            ]
+        }
+    ]
+}

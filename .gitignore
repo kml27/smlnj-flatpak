@@ -1,0 +1,5 @@
+build-dir
+archives
+.flatpak-builder
+repo
+list.txt
