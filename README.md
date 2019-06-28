@@ -13,13 +13,13 @@ Local build requires:
 
 First run, if org.freedesktop.(Platform|Sdk)/i386/18.08 is not yet installed...
 
-```
+```{bash}
 ./install_platform.sh
 ```
 
 Any time, usually after an update to SML/NJ...
 
-```
+```{bash}
 ./get_sml.sh
 ./build.sh
 ```
@@ -31,6 +31,91 @@ Other inclcuded executables can be run using the --command flag i.e.
 
 e.g.
 ` flatpak run --command=heap2exec org.smlnj.sml foo.x86-unix foo ` 
+
+Passing environment variables can be accomplished with --env.
+
+If an older version that uses CM_ROOT were being used, it could be set as follows.
+
+``` 
+flatpak run --env=CM_ROOT=socket.cm org.smlnj.sml
+Standard ML of New Jersey v110.91 [built: Thu Jun 27 13:37:51 2019]
+- OS.Process.getEnv("CM_ROOT");
+[autoloading]
+[library $SMLNJ-BASIS/basis.cm is stable]
+[library $SMLNJ-BASIS/(basis.cm):basis-common.cm is stable]
+[autoloading done]
+val it = SOME "socket.cm" : string option
+```
+
+Specifying libraries for the Compilation manager should work as before for internal libraries created as part of the flatpak build.
+
+The following example is from [_Unix System Programming with Standard ML_](http://mlton.org/References.attachments/Shipman02.pdf) by Anthony L. Shipman.
+
+`socket.sml`  
+```{sml}
+structure Main =
+struct
+fun connect port =
+let
+    val localhost =
+                valOf(NetHostDB.fromString "127.0.0.1")
+    val addr = INetSock.toAddr(localhost, port)
+    val sock = INetSock.TCP.socket()
+    fun call sock =
+    let
+        val _ = Socket.connect(sock, addr)
+        val msg = Socket.recvVec(sock, 1000)
+        val text = Byte.bytesToString msg
+    in
+        print text;
+        Socket.close sock
+    end
+    handle x => (Socket.close sock; raise x)
+in
+    call sock
+end
+handle OS.SysErr (msg, _) => raise Fail (msg ^ "\n")
+
+fun toErr msg = TextIO.output(TextIO.stdErr, msg)
+
+fun main(arg0, argv) =
+let
+in
+    case argv of
+    [port] =>
+        (case Int.fromString port of
+          NONE => raise Fail "Invalid port number\n"
+        | SOME p => connect p)
+        | _ => raise Fail "Usage: simpletcp port\n";
+        OS.Process.success
+end
+handle
+    Fail msg => (toErr msg; OS.Process.failure)
+| x =>
+(
+    toErr(concat["Uncaught exception: ",
+                exnMessage x, " from\n"]);
+    app (fn s => (print "\t"; print s; print "\n"))
+    (SMLofNJ.exnHistory x);
+    OS.Process.failure
+)
+end
+```
+
+`socket.cm`  
+
+```{sml}
+group is
+    socket.sml
+
+    $/basis.cm
+    $/smlnj-lib.cm
+```
+
+
+
+
+
 
 
 Included executables are as follows:

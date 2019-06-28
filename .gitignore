@@ -3,3 +3,5 @@ archives
 .flatpak-builder
 repo
 list.txt
+.cm
+*.x86-linux

@@ -1,0 +1,25 @@
+
+dist: xenial
+
+# generic includes wget
+language: generic
+
+git:
+  depth: 1
+
+branches:
+  only:
+  - master
+
+before_install:
+  - sudo apt update -y
+  - sudo apt install flatpak flatpak-builder
+
+script:
+  - ./install_platform.sh
+  - ./get_sml.sh
+  - ./build.sh
+
+#single file bundle upload or repo file generation?
+#deploy:
+#  - flatpak 

@@ -1,6 +1,6 @@
 {
     "app-id": "org.smlnj.sml",
-    "runtime": "org.freedesktop.Platform",
+    "runtime": "org.freedesktop.Sdk",
     "runtime-version": "18.08",
     "sdk": "org.freedesktop.Sdk",
     "command": "sml",
@@ -9,7 +9,7 @@
         "--share=network",
         "--socket=x11",
         "--share=ipc"
-    ],
+        ],
     "modules": [
         {
             "name": "sml",
@@ -19,9 +19,10 @@
                 "mkdir /app/config",
                 "mv `ls --ignore='*.tgz'` /app/config",
                 "mv * /app/",
+                "sed -i 's/#request heap2asm/request heap2asm/' /app/config/targets",
                 "(cd /app; config/install.sh)",
                 "rm /app/*.tgz"
-            ],
+                ],
             "sources": [
                 {
                     "type": "archive",
