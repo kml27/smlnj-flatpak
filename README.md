@@ -112,11 +112,9 @@ group is
     $/smlnj-lib.cm
 ```
 
+Current Compilation module instructions are availble [here](https://www.smlnj.org/doc/CM/new.pdf).
 
-
-
-
-
+On systems that are x64 only (e.g. Fedora), a new Flatpak should be created for the heap2asm generated binary.
 
 Included executables are as follows:
 
